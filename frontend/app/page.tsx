@@ -31,11 +31,20 @@ function HomePage() {
       <HeroCarousel />
       
       {/* Temple Description */}
-      <section id="about" className="section bg-temple-sand">
+      {/* <section id="about" className="section bg-temple-sand">
         <div className="temple-container">
           <TempleDescription />
         </div>
+      </section> */}
+
+      {/* Activities Calendar */}
+      <section id="events" className="section bg-white">
+        <div className="temple-container">
+          <EventCalendar />
+        </div>
       </section>
+
+
       {/* Testimonials */}
       <section id="testimonials" className="section bg-temple-cream">
         <div className="temple-container">
@@ -55,6 +64,7 @@ function HomePage() {
           </div>
         </div>
       </section>
+      {/* Dharma Teachings */}
       <section id="videos" className="section bg-white">
         <div className="temple-container">
           <div className="text-center mb-10">
@@ -68,11 +78,7 @@ function HomePage() {
           <YoutubeCard />
         </div>
       </section>
-      <section id="events" className="section bg-white">
-        <div className="temple-container">
-          <EventCalendar />
-        </div>
-      </section>
+
     </div>
   );
 }

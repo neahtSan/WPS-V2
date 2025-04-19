@@ -4,8 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import { format, parseISO, isSameMonth, isSameDay } from 'date-fns';
 import { th } from 'date-fns/locale';
 import { DayPicker } from 'react-day-picker';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import 'react-day-picker/dist/style.css';
-import { CalendarToday } from '@mui/icons-material'; // You can switch this to a Heroicon if preferred
 import { Event } from '@/types/event';
 import mockEvents from '@/data/mock_events.json';
 
@@ -60,47 +60,79 @@ export default function Calendar() {
         <h2 className="text-xl font-bold text-[#8B4513]">
           ปฏิทินกิจกรรมของวัด
         </h2>
-        <button
-          className="text-[#8B4513] hover:text-[#DAA520]"
-          onClick={() => setCurrentMonth(today)}
-          aria-label="กลับไปวันนี้"
-        >
-          <CalendarToday />
-        </button>
       </div>
 
-      <div
-        className="flex flex-col md:flex-row gap-4"
-        ref={calendarRef}
-      >
+      <div className="flex flex-col md:flex-row gap-4" ref={calendarRef}>
         {/* Calendar */}
-        <div className="border rounded-xl shadow-md p-2 bg-white">
-          <DayPicker
-            locale={th}
-            mode="single"
-            selected={selectedDate}
-            onSelect={setSelectedDate}
-            month={currentMonth}
-            onMonthChange={handleMonthChange}
-            modifiers={{
-              hasEvent: (day) =>
-                monthEvents.some((event) =>
-                  isSameDay(parseISO(event.date), day)
-                ),
-            }}
-            modifiersStyles={{
-              hasEvent: {
-                backgroundColor: '#DAA520',
-                color: '#fff',
-                borderRadius: '50%',
-              },
-            }}
-            showOutsideDays
-            styles={{
-              caption: { textAlign: 'center', fontSize: '1.25rem' },
-              day: { fontSize: '1rem', padding: '0.5rem' },
-            }}
-          />
+        <div className="bg-[#F5DEB3] rounded-xl border-2 border-[#8B4513] p-4 flex flex-col">
+          {/* Calendar block */}
+          <div className="flex-grow">
+            <DayPicker
+              hideNavigation={true}
+              locale={th}
+              mode="single"
+              selected={selectedDate}
+              onSelect={setSelectedDate}
+              month={currentMonth}
+              onMonthChange={handleMonthChange}
+              showOutsideDays
+              modifiers={{
+                hasEvent: (day) =>
+                  monthEvents.some((event) => isSameDay(parseISO(event.date), day)),
+                pastEvent: (day) =>
+                  day < today &&
+                  monthEvents.some((event) => isSameDay(parseISO(event.date), day)),
+                futureEvent: (day) =>
+                  day > today &&
+                  monthEvents.some((event) => isSameDay(parseISO(event.date), day)),
+                todayEvent: (day) =>
+                  isSameDay(day, today) &&
+                  monthEvents.some((event) => isSameDay(parseISO(event.date), day)),
+              }}
+              modifiersClassNames={{
+                todayEvent: 'today-event',
+                futureEvent: 'future-event',
+                pastEvent: 'past-event',
+              }}
+              classNames={{
+                day_button: 'w-6 h-6 flex items-center justify-center rounded-full mx-auto', // universal size & shape
+              }}
+              styles={{
+                day: { fontSize: '1rem', padding: '0.5rem' },
+              }}
+            />
+          </div>
+
+          {/* Manual month caption/navigation at bottom */}
+          <div className="mt-4 flex justify-between items-center px-6">
+            <button
+              onClick={() =>
+                setCurrentMonth(
+                  new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)
+                )
+              }
+              className="text-[#8B4513] hover:text-[#DAA520]"
+              aria-label="เดือนก่อนหน้า"
+            >
+              <ChevronLeft fontSize="medium" />
+            </button>
+
+            <span className="font-semibold text-[#8B4513] text-base text-center w-[160px]">
+              {format(currentMonth, 'LLLL yyyy', { locale: th })}
+            </span>
+
+            <button
+              onClick={() =>
+                setCurrentMonth(
+                  new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1)
+                )
+              }
+              className="text-[#8B4513] hover:text-[#DAA520]"
+              aria-label="เดือนถัดไป"
+            >
+              <ChevronRight fontSize="medium" />
+            </button>
+          </div>
         </div>
 
         {/* Event list */}
@@ -128,12 +160,14 @@ export default function Calendar() {
                   <p className="text-[#8B4513] font-bold text-base">
                     {event.title}
                   </p>
+
+                  {/* ✅ Show formatted event date */}
                   <p className="text-sm text-gray-700">
-                    🕒 {event.time}
+                    📅 {format(parseISO(event.date), 'eeeeที่ d MMMM', { locale: th })}
                   </p>
-                  <p className="text-sm text-gray-600">
-                    {event.description}
-                  </p>
+
+                  <p className="text-sm text-gray-700">🕒 {event.time}</p>
+                  <p className="text-sm text-gray-600">{event.description}</p>
                 </li>
               ))}
           </ul>

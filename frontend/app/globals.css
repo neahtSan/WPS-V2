@@ -296,4 +296,17 @@
   .read-the-docs {
     color: #888;
   }
+
+  .today-event {
+    @apply bg-green-600 text-white !important;
+  }
+
+
+  .future-event {
+    @apply bg-yellow-300 text-black;
+  }
+
+  .past-event {
+    @apply bg-gray-300 text-gray-600;
+  }
 }
