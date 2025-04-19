@@ -60,7 +60,7 @@ export const EmblaCarousel: React.FC<Props> = ({ slides }) => {
                 >
                 <Image
                     src={slide.image}
-                    alt={slide.title}
+                    alt={`Slide ${index + 1}`}
                     fill
                     className="object-cover rounded-md"
                     sizes={`${imageWidth}px`}
@@ -68,10 +68,10 @@ export const EmblaCarousel: React.FC<Props> = ({ slides }) => {
             </div>
 
 
-        <div className="w-full max-w-[90vw] md:max-w-[calc(16/9*60vh)] p-4 bg-white shadow-md">
+        {/* <div className="w-full max-w-[90vw] md:max-w-[calc(16/9*60vh)] p-4 bg-white shadow-md">
             <h2 className="text-lg font-bold">{slide.title}</h2>
             <p className="text-sm text-gray-600">{slide.description}</p>
-        </div>
+        </div> */}
         </div>
         ))}
       </div>
