@@ -5,6 +5,7 @@ import { format, parseISO, isSameMonth, isSameDay } from 'date-fns';
 import { th } from 'date-fns/locale';
 import { DayPicker } from 'react-day-picker';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { motion, AnimatePresence } from 'framer-motion';
 import 'react-day-picker/dist/style.css';
 import { Event } from '@/types/event';
 import mockEvents from '@/data/mock_events.json';
@@ -49,6 +50,7 @@ export default function Calendar() {
   const monthEvents = getEventsForMonth(currentMonth);
   const dayEvents = selectedDate ? getEventsForDay(selectedDate) : [];
   const displayedEvents = selectedDate ? dayEvents : monthEvents;
+  const visibleEvents = displayedEvents.slice(0, showAll ? displayedEvents.length : 2);
 
   return (
     <div className="flex flex-col gap-4">
@@ -82,9 +84,10 @@ export default function Calendar() {
                 monthEvents.some((event) => isSameDay(parseISO(event.date), day)),
             }}
             modifiersClassNames={{
-              todayEvent: 'today-event',
-              futureEvent: 'future-event',
-              pastEvent: 'past-event',
+              todayEvent: 'bg-green-600 text-white rounded-full',
+              futureEvent: 'bg-yellow-300 text-black rounded-full',
+              pastEvent: 'bg-gray-300 text-gray-600 rounded-full',
+              hasEvent: 'rounded-full',
             }}
             classNames={{
               day_button: 'w-6 h-6 flex items-center justify-center rounded-full mx-auto',
@@ -136,27 +139,54 @@ export default function Calendar() {
                 })}`}
           </h3>
 
-          {displayedEvents.length === 0 ? (
-            <p className="text-sm text-gray-700">ไม่มีรายการกิจกรรม</p>
-          ) : (
-            <ul className="space-y-4">
-              {displayedEvents
-                .slice(0, showAll ? displayedEvents.length : 2)
-                .map((event) => (
-                  <li
-                    key={event.id}
-                    className="bg-white rounded-lg p-4 shadow transition hover:shadow-md"
-                  >
-                    <p className="text-[#8B4513] font-bold text-base">{event.title}</p>
-                    <p className="text-sm text-gray-700">
-                      📅 {format(parseISO(event.date), 'eeeeที่ d MMMM', { locale: th })}
-                    </p>
-                    <p className="text-sm text-gray-700">🕒 {event.time}</p>
-                    <p className="text-sm text-gray-600">{event.description}</p>
-                  </li>
-                ))}
-            </ul>
-          )}
+          <AnimatePresence mode="sync">
+            {visibleEvents.length === 0 ? (
+              <motion.p
+                className="text-sm text-gray-700"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                ไม่มีรายการกิจกรรม
+              </motion.p>
+            ) : (
+              <motion.ul
+                className="space-y-4"
+                initial={false}
+                animate="open"
+                exit="collapsed"
+                variants={{
+                  open: {
+                    transition: { staggerChildren: 0.05, delayChildren: 0.1 },
+                  },
+                  collapsed: {
+                    transition: { staggerChildren: 0.05, staggerDirection: -1 },
+                  },
+                }}
+              >
+                <AnimatePresence mode="popLayout">
+                  {visibleEvents.map((event) => (
+                    <motion.li
+                      key={event.id}
+                      layout
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                      className="bg-white rounded-lg p-4 shadow transition hover:shadow-md"
+                    >
+                      <p className="text-[#8B4513] font-bold text-base">{event.title}</p>
+                      <p className="text-sm text-gray-700">
+                        📅 {format(parseISO(event.date), 'eeeeที่ d MMMM', { locale: th })}
+                      </p>
+                      <p className="text-sm text-gray-700">🕒 {event.time}</p>
+                      <p className="text-sm text-gray-600">{event.description}</p>
+                    </motion.li>
+                  ))}
+                </AnimatePresence>
+              </motion.ul>
+            )}
+          </AnimatePresence>
 
           {displayedEvents.length > 2 && (
             <div className="mt-4 flex justify-center">

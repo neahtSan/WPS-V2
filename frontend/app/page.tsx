@@ -38,7 +38,7 @@ function HomePage() {
       </section> */}
 
       {/* Activities Calendar */}
-      <section id="events" className="section bg-white">
+      <section id="events" className="section bg-[#F5DEB3]">
         <div className="temple-container">
           <EventCalendar />
         </div>
