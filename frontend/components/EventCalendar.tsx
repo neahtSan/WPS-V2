@@ -23,15 +23,11 @@ export default function Calendar() {
   };
 
   const getEventsForDay = (date: Date) => {
-    return events.filter((event) =>
-      isSameDay(parseISO(event.date), date)
-    );
+    return events.filter((event) => isSameDay(parseISO(event.date), date));
   };
 
   const getEventsForMonth = (date: Date) => {
-    return events.filter((event) =>
-      isSameMonth(parseISO(event.date), date)
-    );
+    return events.filter((event) => isSameMonth(parseISO(event.date), date));
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -57,53 +53,48 @@ export default function Calendar() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-[#8B4513]">
-          ปฏิทินกิจกรรมของวัด
-        </h2>
+        <h2 className="text-xl font-bold text-[#8B4513]">ปฏิทินกิจกรรมของวัด</h2>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4" ref={calendarRef}>
+      <div className="flex flex-col md:flex-row md:items-start gap-4" ref={calendarRef}>
         {/* Calendar */}
-        <div className="bg-[#F5DEB3] rounded-xl border-2 border-[#8B4513] p-4 flex flex-col">
-          {/* Calendar block */}
-          <div className="flex-grow">
-            <DayPicker
-              hideNavigation={true}
-              locale={th}
-              mode="single"
-              selected={selectedDate}
-              onSelect={setSelectedDate}
-              month={currentMonth}
-              onMonthChange={handleMonthChange}
-              showOutsideDays
-              modifiers={{
-                hasEvent: (day) =>
-                  monthEvents.some((event) => isSameDay(parseISO(event.date), day)),
-                pastEvent: (day) =>
-                  day < today &&
-                  monthEvents.some((event) => isSameDay(parseISO(event.date), day)),
-                futureEvent: (day) =>
-                  day > today &&
-                  monthEvents.some((event) => isSameDay(parseISO(event.date), day)),
-                todayEvent: (day) =>
-                  isSameDay(day, today) &&
-                  monthEvents.some((event) => isSameDay(parseISO(event.date), day)),
-              }}
-              modifiersClassNames={{
-                todayEvent: 'today-event',
-                futureEvent: 'future-event',
-                pastEvent: 'past-event',
-              }}
-              classNames={{
-                day_button: 'w-6 h-6 flex items-center justify-center rounded-full mx-auto', // universal size & shape
-              }}
-              styles={{
-                day: { fontSize: '1rem', padding: '0.5rem' },
-              }}
-            />
-          </div>
+        <div className="bg-[#F5DEB3] rounded-xl border-2 border-[#8B4513] p-4 flex flex-col w-full md:w-auto md:max-w-md">
+          <DayPicker
+            hideNavigation={true}
+            locale={th}
+            mode="single"
+            selected={selectedDate}
+            onSelect={setSelectedDate}
+            month={currentMonth}
+            onMonthChange={handleMonthChange}
+            showOutsideDays
+            modifiers={{
+              hasEvent: (day) =>
+                monthEvents.some((event) => isSameDay(parseISO(event.date), day)),
+              pastEvent: (day) =>
+                day < today &&
+                monthEvents.some((event) => isSameDay(parseISO(event.date), day)),
+              futureEvent: (day) =>
+                day > today &&
+                monthEvents.some((event) => isSameDay(parseISO(event.date), day)),
+              todayEvent: (day) =>
+                isSameDay(day, today) &&
+                monthEvents.some((event) => isSameDay(parseISO(event.date), day)),
+            }}
+            modifiersClassNames={{
+              todayEvent: 'today-event',
+              futureEvent: 'future-event',
+              pastEvent: 'past-event',
+            }}
+            classNames={{
+              day_button: 'w-6 h-6 flex items-center justify-center rounded-full mx-auto',
+            }}
+            styles={{
+              day: { fontSize: '1rem', padding: '0.5rem' },
+            }}
+          />
 
-          {/* Manual month caption/navigation at bottom */}
+          {/* Custom month navigation */}
           <div className="mt-4 flex justify-between items-center px-6">
             <button
               onClick={() =>
@@ -145,38 +136,33 @@ export default function Calendar() {
                 })}`}
           </h3>
 
-          {displayedEvents.length === 0 && (
+          {displayedEvents.length === 0 ? (
             <p className="text-sm text-gray-700">ไม่มีรายการกิจกรรม</p>
+          ) : (
+            <ul className="space-y-4">
+              {displayedEvents
+                .slice(0, showAll ? displayedEvents.length : 2)
+                .map((event) => (
+                  <li
+                    key={event.id}
+                    className="bg-white rounded-lg p-4 shadow transition hover:shadow-md"
+                  >
+                    <p className="text-[#8B4513] font-bold text-base">{event.title}</p>
+                    <p className="text-sm text-gray-700">
+                      📅 {format(parseISO(event.date), 'eeeeที่ d MMMM', { locale: th })}
+                    </p>
+                    <p className="text-sm text-gray-700">🕒 {event.time}</p>
+                    <p className="text-sm text-gray-600">{event.description}</p>
+                  </li>
+                ))}
+            </ul>
           )}
 
-          <ul className="space-y-4">
-            {displayedEvents
-              .slice(0, showAll ? displayedEvents.length : 3)
-              .map((event) => (
-                <li
-                  key={event.id}
-                  className="bg-white rounded-lg p-4 shadow transition hover:shadow-md"
-                >
-                  <p className="text-[#8B4513] font-bold text-base">
-                    {event.title}
-                  </p>
-
-                  {/* ✅ Show formatted event date */}
-                  <p className="text-sm text-gray-700">
-                    📅 {format(parseISO(event.date), 'eeeeที่ d MMMM', { locale: th })}
-                  </p>
-
-                  <p className="text-sm text-gray-700">🕒 {event.time}</p>
-                  <p className="text-sm text-gray-600">{event.description}</p>
-                </li>
-              ))}
-          </ul>
-
-          {displayedEvents.length > 3 && (
+          {displayedEvents.length > 2 && (
             <div className="mt-4 flex justify-center">
               <button
                 onClick={() => setShowAll(!showAll)}
-                className="text-base font-large font-bold text-[#8B4513] underline transition hover:text-[#DAA520]"
+                className="text-base font-bold text-[#8B4513] underline transition hover:text-[#DAA520]"
               >
                 {showAll ? 'แสดงน้อยลง' : 'ดูทั้งหมด'}
               </button>
