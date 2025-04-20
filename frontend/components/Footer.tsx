@@ -13,79 +13,80 @@ const Footer = () => {
       <div className="max-w-screen-xl mx-auto px-4">
         {/* Top Section */}
         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-8">
-  {/* Address */}
-  <div className="space-y-4 w-fit flex-shrink-0">
-    <h3 className="text-xl font-semibold text-temple-gold">ที่อยู่</h3>
-    <div className="flex items-start">
-      <Image
-        src="/icons/google-maps.svg"
-        alt="Google Maps"
-        width={24}
-        height={24}
-        className="mr-2 mt-1 flex-shrink-0 text-temple-gold"
-      />
-      <address className="not-italic text-sm leading-relaxed">
-        วัดป่าสุญญตา<br />
-        300 หมู่ที่ 7 ตำบล หนองตาแต้ม<br />
-        ประจวบคีรีขันธ์, ประเทศไทย 77190
-      </address>
-    </div>
-  </div>
+        {/* Address */}
+        <div className="space-y-4 w-fit flex-shrink-0">
+          <h3 className="text-xl font-semibold text-temple-gold">ที่อยู่</h3>
+          <div className="flex items-start">
+            <Image
+              src="/icons/google-maps.svg"
+              alt="Google Maps"
+              width={24}
+              height={24}
+              className="mr-2 mt-1 flex-shrink-0 text-temple-gold"
+            />
+            <address className="not-italic text-sm leading-relaxed">
+              วัดป่าสุญญตา<br />
+              300 หมู่ที่ 7 ตำบล หนองตาแต้ม<br />
+              ประจวบคีรีขันธ์, ประเทศไทย 77190
+            </address>
+          </div>
+        </div>
 
-  {/* Map */}
-  <div className="w-full lg:max-w-xl">
-    <Link
-      href="https://maps.app.goo.gl/gkjDF4yHWHvNvDiJ7"
-      target="_blank"
-      className="block w-full rounded-md overflow-hidden cursor-pointer"
-    >
-      <Image
-        src={staticMapUrl}
-        alt="Wat Pasunyata Location Map"
-        width={600}
-        height={300}
-        className="rounded-md w-full h-auto hover:brightness-90 transition"
-      />
-    </Link>
-  </div>
+        {/* Map */}
+        <div className="w-full lg:max-w-xl">
+          <Link
+            href="https://maps.app.goo.gl/gkjDF4yHWHvNvDiJ7"
+            target="_blank"
+            className="block w-full rounded-md overflow-hidden cursor-pointer"
+          >
+            <Image
+              src={staticMapUrl}
+              alt="Wat Pasunyata Location Map"
+              width={640}      // ⬅️ Default width
+              height={480}     // ⬅️ 640 * 3/4
+              sizes="(max-width: 768px) 100vw, 600px"
+              className="rounded-md w-full h-auto hover:brightness-90 transition"
+            />
+          </Link>
+        </div>
 
-  {/* Contact */}
-  <div className="space-y-2 w-fit flex-shrink-0">
-    <h3 className="text-xl font-semibold text-temple-gold">ติดต่อเรา</h3>
-    <div className="flex items-center text-sm">
-      <Image src="/icons/phone.svg" alt="Phone" width={24} height={24} className="mr-2" />
-      <Link href="tel:0813769285" className="hover:text-temple-gold-light transition">
-        0813769285
-      </Link>
-    </div>
-    <div className="flex items-center text-sm">
-      <Image src="/icons/gmail.svg" alt="Email" width={24} height={24} className="mr-2" />
-      <Link href="mailto:info@watpasunyata.com" className="hover:text-temple-gold-light transition">
-        info@watpasunyata.com
-      </Link>
-    </div>
-    <div className="flex items-center text-sm">
-      <Image src="/icons/facebook.svg" alt="Facebook" width={24} height={24} className="mr-2" />
-      <Link
-        href="https://www.facebook.com/WatpaSunyata"
-        target="_blank"
-        className="hover:text-temple-gold-light transition text-[#1877F2]"
-      >
-        วัดป่าสุญญตา 
-      </Link>
-    </div>
-    <div className="flex items-center text-sm">
-      <Image src="/icons/youtube.svg" alt="YouTube" width={24} height={24} className="mr-2" />
-      <Link
-        href="https://www.youtube.com/channel/UCd2wcvmQt4w8Ot4VYdNHRHA"
-        target="_blank"
-        className="hover:text-temple-gold-light transition text-[#FF0000]"
-      >
-        ช่องยูทูปของวัด Watpa Sonyata
-      </Link>
-    </div>
-  </div>
-</div>
+        {/* Contact */}
+        <div className="space-y-2 w-fit flex-shrink-0">
+          <h3 className="text-xl font-semibold text-temple-gold">ติดต่อเรา</h3>
+          <div className="flex items-center text-sm">
+            <Image src="/icons/phone.svg" alt="Phone" width={24} height={24} className="mr-2" />
+            <Link href="tel:0813769285" className="hover:text-temple-gold-light transition">
+              0813769285
+            </Link>
+          </div>
+          <div className="flex items-center text-sm">
+            <Image src="/icons/gmail.svg" alt="Email" width={24} height={24} className="mr-2" />
+            <Link href="mailto:info@watpasunyata.com" className="hover:text-temple-gold-light transition">
+              info@watpasunyata.com
+            </Link>
+          </div>
+          <div className="flex items-center text-sm">
+            <Image src="/icons/facebook.svg" alt="Facebook" width={24} height={24} className="mr-2" />
+            <Link
+              href="https://www.facebook.com/WatpaSunyata"
+              target="_blank"
+              className="hover:text-temple-gold-light transition text-[#1877F2]"
+            >
+              วัดป่าสุญญตา 
+            </Link>
+          </div>
+          <div className="flex items-center text-sm">
+            <Image src="/icons/youtube.svg" alt="YouTube" width={24} height={24} className="mr-2" />
+            <Link
+              href="https://www.youtube.com/channel/UCd2wcvmQt4w8Ot4VYdNHRHA"
+              target="_blank"
+              className="hover:text-temple-gold-light transition text-[#FF0000]"
+            >
+              ช่องยูทูปของวัด Watpa Sonyata
+            </Link>
+          </div>
+        </div>
+      </div>
 
 
         {/* Bottom Section */}
