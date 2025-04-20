@@ -5,28 +5,36 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
+import { AnimatePresence, motion } from 'framer-motion';
+import HomeIcon from '@mui/icons-material/Home';
+import ArticleIcon from '@mui/icons-material/Article';
+import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
+import InfoIcon from '@mui/icons-material/Info';
 
 const navLinks = [
-  { name: "Home", path: "/" },
+  { name: "หน้าแรก", path: "/", icon: <HomeIcon className="mr-2" /> },
   {
-    name: "Dharma Blog",
+    name: "บทความธรรมะ",
     dropdown: true,
-    items: [{ name: "All Articles", path: "/blog" }],
+    icon: <ArticleIcon className="mr-2" />,
+    items: [{ name: "ดูบทความธรรมะทั้งหมด", path: "/blog" }],
   },
   {
-    name: "Meditation",
+    name: "การปฏิบัติธรรม",
     dropdown: true,
+    icon: <SelfImprovementIcon className="mr-2" />,
     items: [
-      { name: "Personal Practice", path: "/meditation/personal" },
-      { name: "Group Practice", path: "/meditation/group" },
+      { name: "การปฏิบัติธรรมส่วนตัว", path: "/meditation/personal" },
+      { name: "การปฏิบัติธรรมกลุ่ม", path: "/meditation/group" },
     ],
   },
   {
-    name: "About Us",
+    name: "เกี่ยวกับเรา",
     dropdown: true,
+    icon: <InfoIcon className="mr-2" />,
     items: [
-      { name: "History & Abbot", path: "/about/history" },
-      { name: "Temple Landmarks", path: "/about/landmarks" },
+      { name: "ประวัติวัด & เจ้าอาวาส", path: "/about/history" },
+      { name: "สถานที่สำคัญ", path: "/about/landmarks" },
     ],
   }
 ];
@@ -70,13 +78,14 @@ const Header = () => {
                 <Link
                   key={link.name}
                   href={link.path || ""}
-                  className={`px-3 py-2 rounded-md transition-colors duration-200 ${
+                  className={`px-3 py-2 rounded-md transition-colors duration-200 flex items-center ${
                     isActive(link.path || "")
                       ? "bg-gray-200 font-semibold"
                       : "hover:bg-gray-100"
                   }`}
                   onClick={closeAll}
                 >
+                  {link.icon}
                   {link.name}
                 </Link>
               ) : (
@@ -86,6 +95,7 @@ const Header = () => {
                     onClick={() => toggleDropdown(link.name)}
                     aria-expanded={activeDropdown === link.name}
                   >
+                    {link.icon}
                     {link.name}
                     {activeDropdown === link.name ? (
                       <ChevronUp className="w-4 h-4 ml-1" />
@@ -94,21 +104,29 @@ const Header = () => {
                     )}
                   </button>
 
-                  {activeDropdown === link.name && (
-                    <ul className="absolute mt-1 space-y-1 bg-white shadow-lg rounded-md w-full">
-                      {link.items?.map((item) => (
-                        <li key={item.name}>
-                          <Link
-                            href={item.path}
-                            className="block px-3 py-2 rounded-md text-base text-gray-700 hover:bg-gray-100"
-                            onClick={closeAll}
-                          >
-                            {item.name}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                  <AnimatePresence>
+                    {activeDropdown === link.name && (
+                      <motion.ul
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.25, ease: 'easeOut' }}
+                        className="absolute mt-1 space-y-1 bg-white shadow-lg rounded-md w-full z-50"
+                      >
+                        {link.items?.map((item) => (
+                          <li key={item.name}>
+                            <Link
+                              href={item.path}
+                              className="block px-3 py-2 rounded-md text-base text-gray-700 hover:bg-gray-100"
+                              onClick={closeAll}
+                            >
+                              {item.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </motion.ul>
+                    )}
+                  </AnimatePresence>
                 </div>
               )
             )}
@@ -128,46 +146,58 @@ const Header = () => {
       </div>
 
       {/* Mobile Menu Dropdown */}
-      {isMenuOpen && (
-        <nav className="md:hidden bg-white border-t text-lg">
-          <ul className="flex flex-col p-4 space-y-2">
-            {navLinks.map((link) =>
-              !link.dropdown ? (
-                <li key={link.name}>
-                  <Link
-                    href={link.path || ""}
-                    className={`block px-3 py-2 rounded-md transition-colors duration-200 ${
-                      isActive(link.path || "")
-                        ? "bg-gray-200 font-semibold"
-                        : "hover:bg-gray-100"
-                    }`}
-                    onClick={closeAll}
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ) : (
-                <li key={link.name}>
-                  <button
-                    className="w-full flex justify-between items-center px-3 py-2 rounded-md text-left bg-gray-100"
-                    onClick={() => toggleDropdown(link.name)}
-                    aria-expanded={activeDropdown === link.name}
-                  >
-                    {link.name}
-                    {activeDropdown === link.name ? (
-                      <ChevronUp className="w-4 h-4" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4" />
-                    )}
-                  </button>
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.nav
+            key="mobile-menu"
+            initial={{ x: '100%', opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: '100%', opacity: 0 }}
+            transition={{ duration: 0.45, ease: 'easeInOut' }}
+            className="fixed inset-0 bg-white z-[9999] p-6 overflow-y-auto"
+          >
+            {/* Close Button */}
+            <div className="flex justify-end mb-6">
+              <button onClick={toggleMenu} aria-label="Close menu">
+                <X className="w-7 h-7 text-gray-800" />
+              </button>
+            </div>
 
-                  {activeDropdown === link.name && (
-                    <ul className="mt-1 ml-4 space-y-1">
+            {/* Menu Items */}
+            <ul className="flex flex-col text-lg">
+              {/* Home as primary button */}
+              <li>
+                <Link
+                  href="/"
+                  onClick={closeAll}
+                  className={`block py-3 px-4 mb-4 rounded-md text-center text-base font-semibold flex items-center justify-center bg-gray-100 hover:bg-gray-200 ${
+                    isActive("/") ? "bg-gray-200 text-gray-900" : "text-gray-800"
+                  }`}
+                >
+                  <HomeIcon className="mr-2" />
+                  หน้าแรก
+                </Link>
+              </li>
+
+              <hr className="border-t border-gray-300 mb-4" />
+
+              {/* Other sections */}
+              {navLinks
+                .filter((link) => link.name !== "หน้าแรก")
+                .map((link) => (
+                  <li key={link.name} className="mb-4">
+                    <span className="block px-4 py-2 text-[#6b615b] font-semibold border-b border-dashed border-gray-300 flex items-center">
+                      {link.icon}
+                      {link.name}
+                    </span>
+                    <ul className="mt-2 ml-4 space-y-2">
                       {link.items?.map((item) => (
                         <li key={item.name}>
                           <Link
                             href={item.path}
-                            className="block px-3 py-2 rounded-md text-base text-gray-700 bg-white hover:bg-gray-100"
+                            className={`block px-3 py-2 rounded-md bg-white hover:bg-gray-100 ${
+                              isActive(item.path) ? "bg-gray-200 font-semibold" : ""
+                            }`}
                             onClick={closeAll}
                           >
                             {item.name}
@@ -175,13 +205,12 @@ const Header = () => {
                         </li>
                       ))}
                     </ul>
-                  )}
-                </li>
-              )
-            )}
-          </ul>
-        </nav>
-      )}
+                  </li>
+                ))}
+            </ul>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
